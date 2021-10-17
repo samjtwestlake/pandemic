@@ -1,0 +1,303 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="../css/main.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.1/socket.io.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="../js/parameters.js"></script>
+        <script src="../js/definitions/cities.js"></script>
+        <script src="../js/utilities/state.js"></script>
+        <script src="../js/utilities/mainController.js"></script>
+        <script src="../js/utilities/stateController.js"></script>
+        <script src="../js/utilities/phaseController.js"></script>
+        <script src="../js/utilities/board.js"></script>
+        <script src="../js/utilities/canvas.js"></script>
+        <script src="../js/utilities/phases.js"></script>
+        <script src="../js/utilities/player.js"></script>
+        <script src="../js/utilities/decks.js"></script>
+        <script src="../js/utilities/stateFeatures.js"></script>
+        <script src="../js/utilities/city.js"></script>
+        <script src="../js/utilities/clickHandler.js"></script>
+        <script src="../js/utilities/defeatChecker.js"></script>
+    </head>
+    <body>
+        <div class="top-panel">
+            <input class="reset hide" type="button" name="reset" value="RESET">
+            <div id="infect-deck">
+                <div class="draw-pile">
+                    <img class="card"src="../img/infectCards/InfectCardReverse.png" alt="">
+                </div>
+                <div class="discard-pile empty">
+                    <div class="top-card">
+                        <img src="" alt="" class="top-card-image">
+                        <div class="top-card-label"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-left-cont">
+                <div class="control-display">
+                    <img class="control-button undo" src="../img/controlButtons/UndoButton.png" alt="">
+                    <img class="control-button redo" src="../img/controlButtons/RedoButton.png" alt="">
+                    <img class="control-button skip" src="../img/controlButtons/SkipButton.png" alt="">
+                </div>
+                <div class="phase-display" style="display: none;">
+                    <img class="active-piece" src="" alt="">
+                    <div class="phase-label-cont"><div class="phase-label label"></div></div>
+                    <div class="stage-label-cont"><div class="stage-label label"></div></div>
+                </div>
+            </div>
+        </div>
+        <div class="board-cont">
+            <div class="board">
+                <div class="setup-display hide">
+                    <div class="title">Create Game</div>
+                    <div class="no-players row">
+                        <div class="subtitle">No. Players</div>
+                        <div class="number-slider">
+                            <div class="number-line">
+                                <div class="number">2</div><div class="number">3</div><div class="number">4</div><div class="number">5</div><div class="number">6</div>
+                            </div>
+                            <input class="slider" name="no-players" type="range" min="2" max="6" value="2" step="1">
+                        </div>
+                    </div>
+                    <div class="no-epidemics row">
+                        <div class="subtitle">No. Epidemics</div>
+                        <div class="number-slider">
+                            <div class="number-line">
+                                <div class="number">4</div><div class="number">5</div><div class="number">6</div>
+                            </div>
+                            <input class="slider" name="no-epidemics" type="range" min="4" max="6" value="5" step="1">
+                        </div>
+                        
+                    </div>
+                    <div class="buttons">
+                        <input name="randomise" value="Randomise" type="button" class="button randomise enabled">
+                        <input name="start" value="Start" type="button" class="button start" disabled>
+                    </div>
+                </div>
+                <div class="result-message-cont"><div class="result-message">VICTORY!</div></div>
+                <img src="../img/WorldMapOutline.png" alt="">
+                <div class="cities">
+                    
+                </div>
+                <div class="players">
+                    
+                </div>
+                <div class="canvas-cont">
+                    <canvas class="canvas"></canvas>
+                </div>
+                <div class="top-bar-display">
+                    <div class="outbreak-display">
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">0</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">1</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">2</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">3</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">4</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">5</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">6</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakStep.png" alt="" class="icon">
+                            <div class="label-cont"><div class="label">7</div></div>
+                        </div>
+                        <div class="outbreak-step">
+                            <img src="../img/displays/outbreak/OutbreakGameOver.png" alt="" class="icon">
+                        </div>
+                        <img src="../img/pieces/Outbreaks Marker.png" alt="" class="outbreak-marker">
+                    </div>
+                    <div class="piece-count-display">
+                        <div class="count-cont">
+                            <div class="stations">
+                                <img src="../img/pieces/Research Stations.png" alt="" class="icon">
+                                <div class="label"></div>
+                            </div>
+                            <div class="cube yellow">
+                                <img src="../img/virusCubes/YellowCube.png" alt="" class="icon">
+                                <div class="label"></div>
+                            </div>
+                            <div class="cube red">
+                                <img src="../img/virusCubes/RedCube.png" alt="" class="icon">
+                                <div class="label"></div>
+                            </div>
+                            <div class="cube blue">
+                                <img src="../img/virusCubes/BlueCube.png" alt="" class="icon">
+                                <div class="label"></div>
+                            </div>
+                            <div class="cube black">
+                                <img src="../img/virusCubes/BlackCube.png" alt="" class="icon">
+                                <div class="label"></div>
+                            </div>
+                            <div class="player-cards">
+                                <img src="../img/playerCards/PlayerCardReverse.png" alt="" class="icon">
+                                <div class="label"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="infect-rate-display">
+                        <img class="infect-marker" src="../img/pieces/Infection Rate Marker.png" alt="">
+                        <div class="marker-holders">
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">2</div>
+                            </div>
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">2</div>
+                            </div>
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">2</div>
+                            </div>
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">3</div>
+                            </div>
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">3</div>
+                            </div>
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">4</div>
+                            </div>
+                            <div class="marker-holder">
+                                <img class="infect-marker-holder" src="../img/displays/infectRate/MarkerHolder.png" alt="">
+                                <div class="label">4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="infect-card-display">
+                    <div class="fade-button-cont">
+                        <img class="button hide" src="../img/controlButtons/HideButton.png" alt="">
+                        <img class="button show" src="../img/controlButtons/ShowButton.png" alt="">
+                    </div>
+                    <div class="infect-card-cont"></div>
+                </div>
+                <div class="cure-display">
+                    <img class="cured-image" src="../img/displays/CureDisplay.png" alt="">
+                    <div class="cure-holder black">
+                        <img class="cure-marker eradicated" src="../img/curedDiseases/Cure Marker - Black Eradicated.png" alt="">
+                        <img class="cure-marker cured" src="../img/curedDiseases/Cure Marker - Black.png" alt="">
+                    </div>
+                    <div class="cure-holder blue">
+                        <img class="cure-marker eradicated" src="../img/curedDiseases/Cure Marker - Blue Eradicated.png" alt="">
+                        <img class="cure-marker cured" src="../img/curedDiseases/Cure Marker - Blue.png" alt="">
+                    </div>
+                    <div class="cure-holder red">
+                        <img class="cure-marker eradicated" src="../img/curedDiseases/Cure Marker - Red Eradicated.png" alt="">
+                        <img class="cure-marker cured" src="../img/curedDiseases/Cure Marker - Red.png" alt="">
+                    </div>
+                    <div class="cure-holder yellow">
+                        <img class="cure-marker eradicated" src="../img/curedDiseases/Cure Marker - Yellow Eradicated.png" alt="">
+                        <img class="cure-marker cured" src="../img/curedDiseases/Cure Marker - Yellow.png" alt="">
+                    </div>
+                </div>
+                
+                <div class="own-hand"></div>
+            </div>
+        </div>
+        <div class="bottom-panel">
+            <div class="player-hands"></div>
+            <div id="player-deck">
+                <div class="draw-pile">
+                    <img class="card" src="../img/playerCards/PlayerCardReverse.png" alt="">
+                </div>
+                <div class="discard-pile"></div>
+            </div>
+        </div>
+        <div class="clonables" style="display: none;">
+            <div class="city">
+                <img src="" alt="" class="city-icon">
+                <div class='label-cont'><div class='label'></div></div>
+                <div class="player-cont"></div>
+                <div class="infect-cont own-color">
+                    <img class="infect-ring infect-1" src="../img/infectRings/YellowInfectRing.png" alt="">
+                    <img class="infect-ring infect-2" src="../img/infectRings/OrangeInfectRing.png" alt="">
+                    <img class="infect-ring infect-3" src="../img/infectRings/RedInfectRing.png" alt="">
+                </div>
+                <div class="cube-cont">
+                    <div class="infect-cont blue" data-color="blue">
+                        <img src="../img/virusCubes/BlueCube.png" alt="" class="cube blue">
+                        <img class="infect-ring infect-1" src="../img/infectRings/YellowInfectRing.png" alt="">
+                        <img class="infect-ring infect-2" src="../img/infectRings/OrangeInfectRing.png" alt="">
+                        <img class="infect-ring infect-3" src="../img/infectRings/RedInfectRing.png" alt="">
+                    </div>
+                    <div class="infect-cont black" data-color="black">
+                        <img src="../img/virusCubes/BlackCube.png" alt="" class="cube black">
+                        <img class="infect-ring infect-1" src="../img/infectRings/YellowInfectRing.png" alt="">
+                        <img class="infect-ring infect-2" src="../img/infectRings/OrangeInfectRing.png" alt="">
+                        <img class="infect-ring infect-3" src="../img/infectRings/RedInfectRing.png" alt="">
+                    </div>
+                    <div class="infect-cont red" data-color="red">
+                        <img src="../img/virusCubes/RedCube.png" alt="" class="cube red">
+                        <img class="infect-ring infect-1" src="../img/infectRings/YellowInfectRing.png" alt="">
+                        <img class="infect-ring infect-2" src="../img/infectRings/OrangeInfectRing.png" alt="">
+                        <img class="infect-ring infect-3" src="../img/infectRings/RedInfectRing.png" alt="">
+                    </div>
+                    <div class="infect-cont yellow" data-color="yellow">
+                        <img src="../img/virusCubes/YellowCube.png" alt="" class="cube yellow">
+                        <img class="infect-ring infect-1" src="../img/infectRings/YellowInfectRing.png" alt="">
+                        <img class="infect-ring infect-2" src="../img/infectRings/OrangeInfectRing.png" alt="">
+                        <img class="infect-ring infect-3" src="../img/infectRings/RedInfectRing.png" alt="">
+                    </div>
+                </div>
+                <img class="station" src="../img/actionIcons/BuildResearchStation.png">
+            </div>
+            <div class="hand">
+                <div class="background"></div>
+            </div>
+            <div class="player-card">
+                <img class="image" src="" alt="">
+                <div class="label"></div>
+                <div class="background"></div>
+            </div>
+            <div class="player">
+                <img src="" alt="" class="piece">
+                <img src="../img/pieces/pieceOutline.png" alt="" class="piece-outline">
+                <div class="action-button-cont">
+                    <div class="action-button" id="action-build">
+                        <img class="action-icon action-build" src="../img/actionIcons/BuildResearchStation.png" alt="">
+                    </div>
+                    <div class="action-button" id="action-share">
+                        <img class="action-icon action-share" src="../img/actionIcons/ShareKnowledge.png" alt="">
+                    </div>
+                    <div class="action-button" id="action-treat">
+                        <img class="action-icon action-treat" src="../img/actionIcons/TreatDisease.png" alt="">
+                    </div>
+                    <div class="action-button" id="action-cure">
+                        <img class="action-icon action-cure" src="../img/actionIcons/CureDisease.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="infect-card">
+                <img src="" alt="" class="image">
+                <div class="label"></div>
+            </div>
+            <div class='player-hand-card'><div class="symbol"></div></div>
+            <img class="infect-marker" src="../img/pieces/Infection Rate Marker.png" alt="">
+            <img class="outbreaks-marker" src="../img/pieces/Outbreaks Marker.png" alt="">
+        </div>
+        <script src="../js/client.js"></script>
+        <script src="../js/main.js"></script>
+    </body>
+</html>
